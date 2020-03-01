@@ -54,6 +54,7 @@ def classify(ctx, model, labels):
     _, height, width, _ = interpreter.get_input_details()[0]['shape']
 
     with picamera.PiCamera(resolution=(640, 480), framerate=30) as camera:
+        camera.hflip = True
         camera.start_preview()
         try:
             stream = io.BytesIO()
