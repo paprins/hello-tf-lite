@@ -3,3 +3,5 @@ numpy
 picamera
 Pillow
 click
+pyyaml
+opencv-contrib-python

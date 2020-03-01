@@ -19,7 +19,7 @@ CAMERA_HEIGHT = 480
 @click.version_option(version=__version__)
 @click.pass_context
 def main(ctx):
-    print('hello')
+    pass
 
 def load_labels(path):
     """Loads the labels file. Supports files with or without index numbers."""
