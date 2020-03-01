@@ -6,7 +6,9 @@ import numpy as np
 import picamera
 from PIL import Image
 from tflite import __version__
+
 from tflite_runtime.interpreter import Interpreter
+from tflite_runtime.interpreter import load_delegate
 
 @click.group()
 @click.version_option(version=__version__)
@@ -46,6 +48,7 @@ def classify(ctx, model, labels):
     labels = load_labels(labels)
 
     interpreter = Interpreter(model)
+    interpreter = Interpreter(model, experimental_delegates=[load_delegate('libedgetpu.so.1.0')])
     interpreter.allocate_tensors()
 
     _, height, width, _ = interpreter.get_input_details()[0]['shape']
