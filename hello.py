@@ -83,7 +83,7 @@ def detect_objects(interpreter, image, threshold):
             results.append(result)
     return results
 
-def annotate_objects(annotator, results, label):
+def annotate_objects(annotator, results, labels):
     """Draws the bounding box and label for each object in the results."""
     for obj in results:
         # Convert the bounding box figures from relative coordinates
