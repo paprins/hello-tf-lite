@@ -5,7 +5,7 @@ import json
 import click
 import numpy as np
 import picamera
-from annotation import Annotator
+from tflite import Annotator
 from PIL import Image
 from tflite import __version__, Annotator
 
