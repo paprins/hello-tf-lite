@@ -47,14 +47,16 @@ def classify_image(interpreter, image, top_k=1):
 def classify(ctx, model, labels):
     labels = load_labels(labels)
 
-    interpreter = Interpreter(model)
+    # speed up inferencing by delegating to Edge TPU (~ Coral USB Accelerator)
     interpreter = Interpreter(model, experimental_delegates=[load_delegate('libedgetpu.so.1.0')])
     interpreter.allocate_tensors()
 
     _, height, width, _ = interpreter.get_input_details()[0]['shape']
 
     with picamera.PiCamera(resolution=(640, 480), framerate=30) as camera:
-        camera.hflip = True
+        # flip camera
+        camera.vflip = True
+
         camera.start_preview()
         try:
             stream = io.BytesIO()
