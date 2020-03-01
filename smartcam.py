@@ -18,6 +18,7 @@ def main(ctx, config):
 @main.command()
 @click.pass_context
 def detect(ctx):
+    # https://github.com/fvilmos/smart_cam/blob/master/smartcam.py
     config = ctx.obj['c']
     vcap = cv2.VideoCapture(config['url'], cv2.CAP_FFMPEG)
 
