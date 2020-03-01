@@ -71,7 +71,10 @@ def classify(ctx, model, labels):
 
                 stream.seek(0)
                 stream.truncate()
-                camera.annotate_text = f'{labels[label_id]} {prob}\n{elapsed_ms}ms'
+
+                if prob >= 0.85:
+                    # only annotate if probability >= 85%
+                    camera.annotate_text = f'{labels[label_id]} {prob}\n{elapsed_ms}ms'
         finally:
             camera.stop_preview()
 
