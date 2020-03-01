@@ -74,13 +74,13 @@ def detect_objects(interpreter, image, threshold):
 
     results = []
     for i in range(count):
-    if scores[i] >= threshold:
-        result = {
-            'bounding_box': boxes[i],
-            'class_id': classes[i],
-            'score': scores[i]
-        }
-        results.append(result)
+        if scores[i] >= threshold:
+            result = {
+                'bounding_box': boxes[i],
+                'class_id': classes[i],
+                'score': scores[i]
+            }
+            results.append(result)
     return results
 
 def annotate_objects(annotator, results, label):
