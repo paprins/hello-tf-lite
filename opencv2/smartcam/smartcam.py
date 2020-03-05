@@ -161,9 +161,6 @@ def detect(ctx, cam, threshold):
                         cv2.putText(frame,' '+labeltxt+' '+str(round(confidence,2)), (xmin,ymin-2), font, 0.3,(0,0,0),1,cv2.LINE_AA)
                         detections +=1 #positive detections
 
-            else:
-                click.echo('You can haz no out ... sorry')
-
             # keypress?
             keypress = cv2.waitKey(5)
 
