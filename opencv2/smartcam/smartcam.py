@@ -144,13 +144,15 @@ def detect(ctx, cam, threshold, rotate):
             if queuepulls ==1:
                 timer2 = time.time()
 
-            img = Image.fromarray(frame)
-
             if rotate:
+                #
                 # 0 = cv::ROTATE_90_CLOCKWISE
                 # 1 = cv::ROTATE_180 = 1,
                 # 2 = cv::ROTATE_90_COUNTERCLOCKWISE
-                img = cv2.rotate(img, int(rotate))
+                #
+                frame = cv2.rotate(frame, int(rotate))
+
+            img = Image.fromarray(frame)
 
             classifier.enqueue(img)
 
