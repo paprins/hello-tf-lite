@@ -54,7 +54,7 @@ class Classifier(object):
             if not self.input.empty():
                 # grab frame from input queue
                 img = self.input.get()
-                results = engine.DetectWithImage(
+                results = engine.detect_with_image(
                     img, 
                     threshold=0.4,
                     keep_aspect_ratio=True, 
@@ -144,7 +144,7 @@ def detect(ctx, cam, threshold):
             if out:
                 for detection in out:
                     objId = detection[0]
-                    labelTxt = labels[objId]
+                    labeltxt = labels[objId]
                     confidence = detection[1]
                     xmin = detection[2]
                     ymin = detection[3]
@@ -158,7 +158,7 @@ def detect(ctx, cam, threshold):
                         labLen = len(labeltxt)*5+40
                         cv2.rectangle(frame, (xmin-1, ymin-1), (xmin+labLen, ymin-10), (0,255,255), -1)
                         #labeltext
-                        cv2.putText(frame,' '+labeltxt+' '+str(round(confidence,2)), (xmin,ymin-2), font, 0.3,(0,0,0),1,cv2.LINE_AA)
+                        cv2.putText(frame,' ' + labeltxt + ' ' + str(round(confidence,2)), (xmin,ymin-2), font, 0.3,(0,0,0),1,cv2.LINE_AA)
                         detections +=1 #positive detections
 
             # keypress?
