@@ -99,7 +99,7 @@ def main(ctx, config):
 @click.pass_context
 @click.option('--cam', help='rtsp endpoint for ipcamera', default='0', required=False)
 @click.option('--threshold', help='Confidence threshold (default: 0.6)', default=0.6)
-@click.option('--rotate', help='Rotate camera image', type=int, required=False)
+@click.option('--rotate', help='Rotate camera image', type=click.Choice([0,1,2]), required=False)
 def detect(ctx, cam, threshold, rotate):
     config = ctx.obj['c']
 
@@ -147,7 +147,6 @@ def detect(ctx, cam, threshold, rotate):
             img = Image.fromarray(frame)
 
             if rotate:
-                assert rotate in [0,1,2], f'Invalid value for rotate {rotate}'
                 # 0 = cv::ROTATE_90_CLOCKWISE
                 # 1 = cv::ROTATE_180 = 1,
                 # 2 = cv::ROTATE_90_COUNTERCLOCKWISE
