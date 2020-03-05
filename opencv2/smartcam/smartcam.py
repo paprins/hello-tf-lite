@@ -8,8 +8,12 @@ from PIL import Image
 import yaml
 import cv2
 
-import edgetpu.detection.engine
-from edgetpu.utils import image_processing
+HAS_EDGETPU = True
+try:
+    import edgetpu.detection.engine
+    from edgetpu.utils import image_processing
+except ImportError:
+    HAS_EDGETPU = False
 
 # from smartcam.ipcam import ipCamera
 
@@ -48,7 +52,9 @@ class Classifier(object):
         return None
     
     def classify(self, image):
-        click.echo('Classify things ...')
+        if not HAS_EDGETPU:
+            return
+
         engine = edgetpu.detection.engine.DetectionEngine(self.model)
 
         while True:
