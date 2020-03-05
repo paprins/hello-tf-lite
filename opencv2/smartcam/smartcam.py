@@ -42,9 +42,9 @@ class Classifier(object):
 
     def dequeue(self):
         if not self.output.empty():
-            img = self.output.get()
+            return self.output.get()
 
-        return img or None
+        return None
     
     def classify(self, image):
         click.echo('Classify things ...')
