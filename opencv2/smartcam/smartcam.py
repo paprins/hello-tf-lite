@@ -99,6 +99,7 @@ def main(ctx, config):
 @click.pass_context
 @click.option('--cam', help='rtsp endpoint for ipcamera', default='0', required=False)
 @click.option('--threshold', help='Confidence threshold (default: 0.6)', default=0.6)
+@click.option('--rotate', help='Rotate camera image', default=0)
 def detect(ctx, cam, threshold):
     config = ctx.obj['c']
 
@@ -144,6 +145,9 @@ def detect(ctx, cam, threshold):
                 timer2 = time.time()
 
             img = Image.fromarray(frame)
+
+            if rotate > 0:
+                img = cv2.rotate(img, rotate)
 
             classifier.enqueue(img)
 
