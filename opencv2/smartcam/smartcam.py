@@ -128,6 +128,7 @@ def detect(ctx, cam, threshold):
     fps = 0.0
     qfps = 0.0
     img = None
+    timer1 = time.time()
     timer2 = 0
     t2secs = 0
 
