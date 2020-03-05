@@ -99,7 +99,7 @@ def main(ctx, config):
 @click.pass_context
 @click.option('--cam', help='rtsp endpoint for ipcamera', default='0', required=False)
 @click.option('--threshold', help='Confidence threshold (default: 0.6)', default=0.6)
-@click.option('--rotate', help='Rotate camera image', required=False)
+@click.option('--rotate', help='Rotate camera image', type=int, required=False)
 def detect(ctx, cam, threshold, rotate):
     config = ctx.obj['c']
 
