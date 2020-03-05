@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from multiprocessing import Process
 from multiprocessing import Queue
 import click
