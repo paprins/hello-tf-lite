@@ -139,7 +139,7 @@ def detect(ctx, cam, threshold):
 
         if ret:
             if queuepulls ==1:
-			    timer2 = time.time()
+                timer2 = time.time()
 
             img = Image.fromarray(frame)
 
