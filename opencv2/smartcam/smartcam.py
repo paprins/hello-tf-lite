@@ -150,6 +150,8 @@ def detect(ctx, cam, threshold, rotate):
                 # 1 = cv::ROTATE_180 = 1,
                 # 2 = cv::ROTATE_90_COUNTERCLOCKWISE
                 #
+                # TODO: would like to see a better solution ...
+                #
                 frame = cv2.rotate(frame, int(rotate))
 
             img = Image.fromarray(frame)
