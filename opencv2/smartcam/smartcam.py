@@ -172,8 +172,6 @@ def detect(ctx, cam, threshold):
                 threshold = min(round(threshold + 0.1, 2), 1.0)
             elif keypress == 45:
                 threshold = max(round(threshold - 0.1, 2), 0.0)
-            else:
-                click.echo(f'You pressed: {keypress}')
         else:
             break
         
