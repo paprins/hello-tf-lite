@@ -120,9 +120,15 @@ def detect(ctx, cam, threshold):
         output = Queue(maxsize=1)
     )
 
-    # inputQueue = Queue(maxsize=1)
-    # outputQueue = Queue(maxsize=1)
+    frames = 0
+    queuepulls = 0
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    detections = 0
+    fps = 0.0
+    qfps = 0.0
     img = None
+    timer2 = 0
+    t2secs = 0
 
     p = Process(target=classifier.classify, args=(img,))
     p.daemon = True
@@ -132,7 +138,8 @@ def detect(ctx, cam, threshold):
         ret, frame = cap.read()
 
         if ret:
-            cv2.imshow('Coral.ai', frame)
+            if queuepulls ==1:
+			    timer2 = time.time()
 
             img = Image.fromarray(frame)
 
@@ -160,6 +167,39 @@ def detect(ctx, cam, threshold):
                         #labeltext
                         cv2.putText(frame,' ' + labeltxt + ' ' + str(round(confidence,2)), (xmin,ymin-2), font, 0.3,(0,0,0),1,cv2.LINE_AA)
                         detections +=1 #positive detections
+
+                queuepulls += 1
+
+
+            # Display the resulting frame
+            cv2.rectangle(frame, (0,0), (frameWidth,20), (0,0,0), -1)
+
+            cv2.rectangle(frame, (0,frameHeight-20), (frameWidth,frameHeight), (0,0,0), -1)
+            cv2.putText(frame,'Threshold: '+str(round(threshold,1)), (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+
+            cv2.putText(frame,'VID FPS: '+str(fps), (frameWidth-80, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+
+            cv2.putText(frame,'TPU FPS: '+str(qfps), (frameWidth-80, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+
+            cv2.putText(frame,'Positive detections: '+str(detections), (10, frameHeight-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+
+            cv2.putText(frame,'Elapsed time: '+str(round(t2secs,2)), (150, frameHeight-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+
+
+            cv2.namedWindow('Coral.ai',cv2.WINDOW_NORMAL)
+            cv2.resizeWindow('Coral.ai',frameWidth,frameHeight)
+            cv2.imshow('Coral.ai',frame)
+
+            # FPS calculation
+            frames += 1
+            if frames >= 1:
+                end1 = time.time()
+                t1secs = end1-timer1
+                fps = round(frames/t1secs,2)
+            if queuepulls > 1:
+                end2 = time.time()
+                t2secs = end2-timer2
+                qfps = round(queuepulls/t2secs,2)
 
             # keypress?
             keypress = cv2.waitKey(5)
