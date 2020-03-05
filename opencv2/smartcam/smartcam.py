@@ -147,7 +147,7 @@ def detect(ctx, cam, threshold, rotate):
             img = Image.fromarray(frame)
 
             if rotate:
-                assert rotate in [0,1,2], f'Invalid value for rotate {1}'
+                assert rotate in [0,1,2], f'Invalid value for rotate {rotate}'
                 # 0 = cv::ROTATE_90_CLOCKWISE
                 # 1 = cv::ROTATE_180 = 1,
                 # 2 = cv::ROTATE_90_COUNTERCLOCKWISE
