@@ -7,7 +7,7 @@ import picamera
 import click
 
 from PIL import Image
-from tflite_runtime.interpreter import Interpreter
+from tflite_runtime.interpreter import load_delegate, Interpreter
 
 def load_labels(path):
   with open(path, 'r') as f:
@@ -57,7 +57,7 @@ def classify(ctx):
 
     labels = load_labels(config['classify']['labels'])
 
-    interpreter = Interpreter(config['classify']['model'])
+    interpreter = Interpreter(config['classify']['model'], experimental_delegates=[load_delegate('libedgetpu.so.1.0')])
     interpreter.allocate_tensors()
     _, height, width, _ = interpreter.get_input_details()[0]['shape']
 
