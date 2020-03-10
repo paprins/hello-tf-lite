@@ -204,11 +204,9 @@ def detect(ctx, cam, threshold, rotate):
 
             cv2.putText(frame,'Elapsed time: '+str(round(t2secs,2)), (150, frameHeight-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
 
-
             cv2.namedWindow('Coral.ai',cv2.WINDOW_NORMAL)
             cv2.resizeWindow('Coral.ai',frameWidth,frameHeight)
             cv2.imshow('Coral.ai', frame)
-            # cv2.imshow('Coral.ai',cv2.flip(frame, 0))
 
             # FPS calculation
             frames += 1
