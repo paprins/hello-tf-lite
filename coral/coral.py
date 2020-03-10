@@ -83,5 +83,20 @@ def classify(ctx):
         finally:
             camera.stop_preview()
 
+@main.command()
+@click.pass_context
+def posenet(ctx):
+    config = ctx.obj['c']
+
+    interpreter = Interpreter(config['posenet']['model'], experimental_delegates=[load_delegate('libedgetpu.so.1.0')])
+
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    click.echo(input_details)
+    click.echo(output_details)
+
+
+
 if __name__ == '__main__':
   main()

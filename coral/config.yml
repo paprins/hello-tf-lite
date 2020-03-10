@@ -2,3 +2,6 @@
 classify:
   model: models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite
   labels: models/coco_labels.txt
+
+posenet:
+  mode: models/posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite
