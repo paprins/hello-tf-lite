@@ -1,0 +1,4 @@
+url: rtsp://10.0.1.115:7447/fYaycR1ar6mA0jPm
+
+model: ../models/detect.tflite
+labels: ../models/coco_labels.txt
