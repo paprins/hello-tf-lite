@@ -1,7 +1,9 @@
 import os
+import time
+import json
+
 import click
 import cv2
-import json
 import yaml
 from multiprocessing import Process, Queue
 from PIL import Image
@@ -21,7 +23,8 @@ def main():
 
 @main.command()
 @click.option('-c', '--config', type=click.Path(), help='Path to config file.', required=True)
-def detect(config):
+@click.option('-t', '--threshold', default=0.6)
+def detect(config, threshold):
     c = load(config)
     basedir = os.path.dirname(os.path.abspath(config))
     click.echo(basedir)
@@ -47,6 +50,15 @@ def detect(config):
     )
 
     try:
+        frames = 0
+        queuepulls = 0
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        fps = 0.0
+        qfps = 0.0
+        timer1 = time.time()
+        timer2 = 0
+        t2secs = 0
+
         p = Process(target=classifier.classify)
         p.daemon = True
         p.start()
@@ -55,6 +67,9 @@ def detect(config):
             ret, frame = cap.read()
 
             if ret:
+                if queuepulls ==1:
+                    timer2 = time.time()
+
                 classifier.enqueue(Image.fromarray(frame))
 
                 out = classifier.dequeue()
@@ -62,46 +77,48 @@ def detect(config):
                 if out:
                     for detection in out:
                         # box, class, score
-                        for i in range(detection['box'].shape[0]):
-                            # box = detection['box'][0, 1, :]
-                            box = detection['box']
-                            x0 = int(box[1] * frame.shape[1])
-                            y0 = int(box[0] * frame.shape[0])
-                            x1 = int(box[3] * frame.shape[1])
-                            y1 = int(box[2] * frame.shape[0])
-                            box = box.astype(np.int)
-                            cv2.rectangle(frame, (x0, y0), (x1, y1), (255, 0, 0), 2)
-                            cv2.rectangle(frame, (x0, y0), (x0 + 100, y0 - 30), (255, 0, 0), -1)
-                            cv2.putText(frame,
-                                detection['label'],
-                                (x0, y0),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                1,
-                                (255, 255, 255),
-                                2
-                            )
+                        if detection['score'] > threshold:
+                            for i in range(detection['box'].shape[0]):
+                                box = detection['box']
+                                x0 = int(box[1] * frame.shape[1])
+                                y0 = int(box[0] * frame.shape[0])
+                                x1 = int(box[3] * frame.shape[1])
+                                y1 = int(box[2] * frame.shape[0])
+                                box = box.astype(np.int)
 
-                    # for i in range(boxes.shape[1]):
-                    #     if scores[0, i] > 0.5:
-                    #         box = boxes[0, i, :]
-                    #         x0 = int(box[1] * img_org.shape[1])
-                    #         y0 = int(box[0] * img_org.shape[0])
-                    #         x1 = int(box[3] * img_org.shape[1])
-                    #         y1 = int(box[2] * img_org.shape[0])
-                    #         box = box.astype(np.int)
-                    #         cv2.rectangle(img_org, (x0, y0), (x1, y1), (255, 0, 0), 2)
-                    #         cv2.rectangle(img_org, (x0, y0), (x0 + 100, y0 - 30), (255, 0, 0), -1)
-                    #         cv2.putText(img_org,
-                    #             str(int(labels[0, i])),
-                    #             (x0, y0),
-                    #             cv2.FONT_HERSHEY_SIMPLEX,
-                    #             1,
-                    #             (255, 255, 255),
-                    #             2)    
+                                # bounding box
+                                cv2.rectangle(frame, (x0, y0), (x1, y1), color=(0, 255, 255))
+
+                                # label
+                                labLen = len(detection['label']) * 5 + 40
+                                cv2.rectangle(frame, (x0-1, y0-1), (x0+labLen, y0-10), (0,255,255), -1)
+
+                                # labeltext
+                                cv2.putText(frame,f" {detection['label']} {str(round(detection['score'],2))}", (x0,y0-2), font, 0.3,(0,0,0),1,cv2.LINE_AA)
+
+                    queuepulls += 1
+
+                cv2.rectangle(frame, (0,0), (width,20), (0,0,0), -1)
+                cv2.rectangle(frame, (0,height-20), (width,height), (0,0,0), -1)
+
+                cv2.putText(frame,'Threshold: '+str(round(threshold,1)), (10, 10), font, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+                cv2.putText(frame,'VID FPS: '+str(fps), (width-80, 10), font, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
+                cv2.putText(frame,'TPU FPS: '+str(qfps), (width-80, 20), font, 0.3,(0, 255, 255), 1, cv2.LINE_AA)
 
                 cv2.namedWindow('coral.ai', cv2.WINDOW_NORMAL)
                 cv2.resizeWindow('coral.ai', width, height)
                 cv2.imshow('coral.ai', frame)
+
+                # FPS calculation
+                frames += 1
+                if frames >= 1:
+                    end1 = time.time()
+                    t1secs = end1-timer1
+                    fps = round(frames/t1secs,2)
+                if queuepulls > 1:
+                    end2 = time.time()
+                    t2secs = end2-timer2
+                    qfps = round(queuepulls/t2secs,2)
 
                 keypress = cv2.waitKey(5)
 
@@ -109,6 +126,10 @@ def detect(config):
                     break
                 elif keypress == -1:
                     continue
+                elif keypress == 44:
+                    threshold = min(round(threshold + 0.1, 2), 1.0)
+                elif keypress == 45:
+                    threshold = max(round(threshold - 0.1, 2), 0.0)
             else:
                 break
 

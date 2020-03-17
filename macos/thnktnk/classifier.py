@@ -83,7 +83,6 @@ class Classifier:
                     if scores[i] >= threshold:
                         result = {
                             'box': boxes[i],
-                            'class': classes[i],
                             'label': self.get_label(classes[i]),
                             'score': scores[i]
                         }
